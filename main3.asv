@@ -1,0 +1,15 @@
+degree = 2; typeOfElement=0; %1=TRI, 0=QUA
+theReferenceElement = createReferenceElement(degree,typeOfElement);
+nOfElementNodes = size(theReferenceElement.N,2);
+[size_mesh1,lambda_val1]=mesh_influence_lambda(4,nOfElementNodes,theReferenceElement,degree,false);
+[size_mesh2,lambda_val2]=mesh_influence_lambda(4,nOfElementNodes,theReferenceElement,degree,true);
+%figure,
+disp("size_mesh");
+disp(size_mesh1);
+disp("sum lambda");
+disp(lambda_val1);
+disp("size_mesh");
+disp(size_mesh2);
+disp("sum lambda");
+disp(lambda_val2);
+%plot(size_mesh,lambda_val);

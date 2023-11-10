@@ -1,0 +1,34 @@
+function errorL2=computeL2error(u,X,T,theReferenceElement)
+
+IPweights = theReferenceElement.IPweights;
+IPcoord = theReferenceElement.IPcoord;
+N=theReferenceElement.N;
+Nxi=theReferenceElement.Nxi;
+Neta=theReferenceElement.Neta;
+
+nOfElements = size(T,1);
+errorL2 = 0;
+%Loop in elements
+for i=1:nOfElements
+    Te=T(i,:); Xe=X(Te,:); %selection des noeuds dans l'élément e
+    xe = Xe(:,1); ye=Xe(:,2); %coordonées des noeuds dans l'élément e 
+    Ue=u(Te); %récupération de la valeur de la solution numérique aux noeuds de l'élément 
+    for g=1:length(IPweights) %somme sur les points d'inétgration 
+        N_g = N(g,:); %on récupère les valeurs des fonctions nodale au point d'intégration courant (point d'intégration numéro g)
+        Nxi_g = Nxi(g,:); %on récupère les valeurs des derivées partielles par rapport à xi au point d'intégration courant
+        Neta_g = Neta(g,:); % pareil mais par rapport à eta
+        J = [Nxi_g*xe	  Nxi_g*ye
+            Neta_g*xe  Neta_g*ye];%calcul de la jacobienne du changement de varaiable isoparamétric (on va dans l'élément physique)
+        dvolu=IPweights(g)*det(J); % changement isoparametric pour l'élément differentiel 
+        Xg = N_g*Xe; %changement isoparamétric (points auxquels on évalue la fonction (u-u^h))
+
+        %calcul du gradient de u 
+
+        grad_ana=[analytic_deriv_x(Xe),analytic_deriv_y(Xe)];
+        grad
+
+        errorL2 = errorL2 + (analytical(Xg)-N_g*Ue)^2*dvolu;
+    end      
+end
+errorL2 = sqrt(errorL2);
+  
